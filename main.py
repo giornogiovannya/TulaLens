@@ -5,7 +5,11 @@ app = Flask(__name__)
 
 @app.route('/ping', methods=['GET'])
 def ping():
-    return 'pong'
+    response = {
+        'ping': 'pong',
+        'aboba': 'boba'
+    }
+    return jsonify(response)
 
 
 if __name__ == '__main__':
