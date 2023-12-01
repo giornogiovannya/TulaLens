@@ -22,7 +22,7 @@ def upload_file():
         return jsonify({'error': 'No selected file'})
 
     if file:
-        file.save('/path/to/save/' + file.filename)
+        file.save('/home/aboba/TulaLens/' + file.filename)
         return jsonify({'message': 'File uploaded successfully'})
 
 
