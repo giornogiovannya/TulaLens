@@ -28,15 +28,20 @@ def upload_pdf():
 
 @app.route('/upload_photos', methods=['POST'])
 def upload_photos():
-    if 'photo0' not in request.files:
-        return jsonify({'error': 'No photos part'})
+    photo_index = 0
+    photos = []
+    while f'photo{photo_index}' in request.files:
+        photos.extend(request.files.getlist(f'photo{photo_index}'))
+        photo_index += 1
 
-    photos = request.files.getlist('photo0')
+    if not photos:
+        return jsonify({'error': 'No photos part'})
 
     for idx, photo in enumerate(photos):
         photo.save(f'/home/aboba/TulaLens/static/photo_{idx}.jpg')
 
     return jsonify({'message': 'Photos uploaded successfully'})
+
 
 
 if __name__ == '__main__':
