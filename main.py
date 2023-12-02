@@ -46,7 +46,7 @@ def upload_photos():
 @app.route('/get_pdf')
 def get_pdf():
     print('Послал пдфку')
-    return send_file('home/aboba/TulaLens/sample.pdf', as_attachment=True)
+    return send_file('/home/aboba/TulaLens/sample.pdf', as_attachment=True)
 
 
 if __name__ == '__main__':
