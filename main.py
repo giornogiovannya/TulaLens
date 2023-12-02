@@ -12,8 +12,8 @@ def ping():
     return jsonify(response)
 
 
-@app.route('/send_photo', methods=['POST'])
-def upload_file():
+@app.route('/send_pdf', methods=['POST'])
+def upload_pdf():
     if 'file' not in request.files:
         return jsonify({'error': 'No file part'})
 
@@ -34,7 +34,7 @@ def upload_photos():
     photos = request.files.getlist('photo0')
 
     for idx, photo in enumerate(photos):
-        photo.save(f'/home/aboba/static/photo_{idx}.jpg')
+        photo.save(f'/home/aboba/TulaLens/static/photo_{idx}.jpg')
 
     return jsonify({'message': 'Photos uploaded successfully'})
 
