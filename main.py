@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 
 app = Flask(__name__)
 
@@ -42,6 +42,11 @@ def upload_photos():
 
     return jsonify({'message': 'Photos uploaded successfully'})
 
+
+@app.route('/get_pdf')
+def get_pdf():
+    print('Послал пдфку')
+    return send_file('home/aboba/TulaLens/sample.pdf', as_attachment=True)
 
 
 if __name__ == '__main__':
