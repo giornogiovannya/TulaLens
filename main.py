@@ -5,6 +5,25 @@ import shutil
 
 app = Flask(__name__)
 
+USER_DATA_SAVE_PATH = "/home/aboba/TulaLens/TulaLens/user_data"
+
+def get_user_id(login):
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT id FROM users WHERE login=?", (login,))
+    user_id = cursor.fetchone()
+    conn.close()
+    return user_id[0] if user_id else None
+
+
+def get_request_number():
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT MAX(generation_number) FROM generations")
+    max_request_number = cursor.fetchone()[0]
+    conn.close()
+    return max_request_number + 1 if max_request_number else 1
+
 
 def check_user_exists(login):
     conn = sqlite3.connect('database.db')
@@ -15,7 +34,6 @@ def check_user_exists(login):
     return user
 
 
-# Маршрут для авторизации и регистрации
 @app.route('/authenticate', methods=['POST'])
 def authenticate():
     login = request.json.get('login')
@@ -37,6 +55,18 @@ def authenticate():
         return jsonify({'status': 'ok', 'message': 'Пользователь зарегистрирован'}), 200
 
 
+@app.route('/clear_db_1234990', methods=['GET'])
+def clear_tables():
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    cursor.execute("DELETE FROM users")
+    cursor.execute("DELETE FROM generations")
+
+    conn.commit()
+    conn.close()
+
+
 # Функция для создания папки пользователя и генерации пути для сохранения файла
 def create_user_folder(user_id, request_number):
     user_folder = f"user_{user_id}"
@@ -47,6 +77,14 @@ def create_user_folder(user_id, request_number):
     return path
 
 
+def save_files(files, path, folder_name):
+    for idx, file in enumerate(files):
+        if file.filename.endswith('.jpg'):
+            file.save(os.path.join(path, folder_name, f'photo_{idx + 1}.jpg'))
+        elif file.filename.endswith('.pdf'):
+            file.save(os.path.join(path, folder_name, 'file.pdf'))
+
+
 # Маршрут для приема документов
 @app.route('/upload_documents', methods=['POST'])
 def upload_documents():
@@ -55,30 +93,16 @@ def upload_documents():
     claim_files = request.files.getlist('claim')
     calculate_files = request.files.getlist('calculate')
 
-    # Получение ID пользователя из базы данных
+    # Создание папки с данными
     user_id = get_user_id(login)
-
-    # Создание папки пользователя и номера запроса
     request_number = get_request_number()
     path = create_user_folder(user_id, request_number)
 
-    for idx, file in enumerate(agreement_files):
-        if file.filename.endswith('.jpg'):
-            file.save(os.path.join(path, 'agreement', f'photo_{idx + 1}.jpg'))
-        elif file.filename.endswith('.pdf'):
-            file.save(os.path.join(path, 'agreement', 'file.pdf'))
 
-    for idx, file in enumerate(claim_files):
-        if file.filename.endswith('.jpg'):
-            file.save(os.path.join(path, 'claim', f'photo_{idx + 1}.jpg'))
-        elif file.filename.endswith('.pdf'):
-            file.save(os.path.join(path, 'claim', 'file.pdf'))
 
-    for idx, file in enumerate(calculate_files):
-        if file.filename.endswith('.jpg'):
-            file.save(os.path.join(path, 'calculate', f'photo_{idx + 1}.jpg'))
-        elif file.filename.endswith('.pdf'):
-            file.save(os.path.join(path, 'calculate', 'file.pdf'))
+    save_files(agreement_files, path, 'agreement')
+    save_files(claim_files, path, 'claim')
+    save_files(calculate_files, path, 'calculate')
 
 
     return send_file('/home/aboba/TulaLens/sample.pdf', as_attachment=True)
