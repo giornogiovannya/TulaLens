@@ -82,7 +82,7 @@ def upload_documents():
     save_files(calculate_files, user_folder, 'calculate')
 
     # После выполнения операций все файлы удаляются
-    shutil.rmtree(user_folder)
+    #shutil.rmtree(user_folder)
     #return send_file('/home/aboba/TulaLens/sample.pdf', as_attachment=True)
     return jsonify({'status': 'ok', 'message': 'Документы обработаны и удалены'}), 200
 
