@@ -62,6 +62,10 @@ def save_files(files, path, folder_name):
 @app.route('/upload_documents', methods=['POST'])
 def upload_documents():
     login = request.form.get('login')
+    if login is None:
+        # Вывод сообщения об ошибке или логирование
+        return jsonify({'status': 'error', 'message': 'Отсутствует значение login'}), 400
+
     user_folder = os.path.join('user_data', login)
 
     if not os.path.exists(user_folder):
@@ -70,6 +74,9 @@ def upload_documents():
     agreement_files = request.files.getlist('agreement')
     claim_files = request.files.getlist('claim')
     calculate_files = request.files.getlist('calculate')
+    print(agreement_files)
+
+    print("CALC" + calculate_files)
 
     save_files(agreement_files, user_folder, 'agreement')
     save_files(claim_files, user_folder, 'claim')
