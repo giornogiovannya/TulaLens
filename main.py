@@ -65,6 +65,7 @@ def clear_tables():
 
     conn.commit()
     conn.close()
+    return jsonify({'status': 'ok', 'message': 'Бд очищена'}), 200
 
 
 # Функция для создания папки пользователя и генерации пути для сохранения файла
