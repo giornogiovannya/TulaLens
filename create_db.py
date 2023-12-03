@@ -11,13 +11,6 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS users (
                     login TEXT NOT NULL UNIQUE
                 )''')
 
-# Создание таблицы generations
-cursor.execute('''CREATE TABLE IF NOT EXISTS generations (
-                    id INTEGER PRIMARY KEY,
-                    user_id INTEGER NOT NULL,
-                    generation_number INTEGER NOT NULL,
-                    FOREIGN KEY (user_id) REFERENCES users (id)
-                )''')
 
 # Сохранение изменений и закрытие соединения
 conn.commit()
