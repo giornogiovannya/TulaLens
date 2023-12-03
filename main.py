@@ -83,8 +83,8 @@ def upload_documents():
 
     # После выполнения операций все файлы удаляются
     shutil.rmtree(user_folder)
-    return send_file('/home/aboba/TulaLens/sample.pdf', as_attachment=True)
-    #return jsonify({'status': 'ok', 'message': 'Документы обработаны и удалены'}), 200
+    #return send_file('/home/aboba/TulaLens/sample.pdf', as_attachment=True)
+    return jsonify({'status': 'ok', 'message': 'Документы обработаны и удалены'}), 200
 
 
 @app.route('/get_pdf')
